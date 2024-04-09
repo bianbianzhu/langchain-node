@@ -17,6 +17,7 @@ const prompt = "What is the fastest car?";
 const tokenIds = encodePrompt(prompt);
 
 console.log(tokenIds);
+console.log(tokenIds.length);
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
