@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r ts-node/register --env-file=.env src/index.ts"
+    "dev": "node -r ts-node/register --env-file=.env src/basic-chat/index.ts"
   },
   "keywords": [],
   "author": "",
