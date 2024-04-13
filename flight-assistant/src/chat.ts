@@ -16,7 +16,7 @@ export async function createChatCompletion(
     model: "gpt-3.5-turbo",
     messages,
     tools,
-    tool_choice: "auto",
+    tool_choice: tools ? "auto" : undefined,
   });
 
   const completion = response.choices[0];

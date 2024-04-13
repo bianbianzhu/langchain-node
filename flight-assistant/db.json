@@ -1,0 +1,139 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "order_date": "2021-01-01",
+      "customer_name": "John Doe",
+      "order_total": 100.0,
+      "order_status": "shipped"
+    },
+    {
+      "id": 2,
+      "order_date": "2021-01-02",
+      "customer_name": "Jane Doe",
+      "order_total": 200.0,
+      "order_status": "pending"
+    },
+    {
+      "id": 3,
+      "order_date": "2021-01-03",
+      "customer_name": "John Smith",
+      "order_total": 300.0,
+      "order_status": "processing"
+    },
+    {
+      "id": 4,
+      "order_date": "2021-01-04",
+      "customer_name": "Jane Smith",
+      "order_total": 400.0,
+      "order_status": "cancelled"
+    },
+    {
+      "id": 5,
+      "order_date": "2021-01-05",
+      "customer_name": "John Doe",
+      "order_total": 500.0,
+      "order_status": "delivered"
+    },
+    {
+      "id": 6,
+      "order_date": "2021-01-06",
+      "customer_name": "Jane Doe",
+      "order_total": 600.0,
+      "order_status": "processing"
+    },
+    {
+      "id": 7,
+      "order_date": "2021-01-07",
+      "customer_name": "John Smith",
+      "order_total": 700.0,
+      "order_status": "delivered"
+    },
+    {
+      "id": 8,
+      "order_date": "2021-01-08",
+      "customer_name": "Jane Smith",
+      "order_total": 800.0,
+      "order_status": "pending"
+    },
+    {
+      "id": 9,
+      "order_date": "2021-01-09",
+      "customer_name": "John Doe",
+      "order_total": 900.0,
+      "order_status": "shipped"
+    },
+    {
+      "id": 10,
+      "order_date": "2021-01-10",
+      "customer_name": "Simon Peter",
+      "order_total": 1000.0,
+      "order_status": "pending"
+    }
+  ],
+  "flights": [
+    {
+      "id": 1,
+      "flight_number": "AA123",
+      "departure_date": "2024-06-06",
+      "arrival_date": "2024-06-07",
+      "departure_airport": "SYD",
+      "arrival_airport": "LAX",
+      "ticket_stock": 20
+    },
+    {
+      "id": 2,
+      "flight_number": "BB124",
+      "departure_date": "2024-07-07",
+      "arrival_date": "2024-07-07",
+      "departure_airport": "PEK",
+      "arrival_airport": "SYD",
+      "ticket_stock": 10
+    },
+    {
+      "id": 3,
+      "flight_number": "CC125",
+      "departure_date": "2024-09-08",
+      "arrival_date": "2024-09-09",
+      "departure_airport": "SYD",
+      "arrival_airport": "CDG",
+      "ticket_stock": 0
+    },
+    {
+      "id": 4,
+      "flight_number": "DD126",
+      "departure_date": "2024-06-09",
+      "arrival_date": "2024-06-10",
+      "departure_airport": "LAX",
+      "arrival_airport": "PEK",
+      "ticket_stock": 2
+    },
+    {
+      "id": 5,
+      "flight_number": "EE127",
+      "departure_date": "2024-10-21",
+      "arrival_date": "2024-10-21",
+      "departure_airport": "PEK",
+      "arrival_airport": "HND",
+      "ticket_stock": 5
+    },
+    {
+      "id": 6,
+      "flight_number": "FF127",
+      "departure_date": "2024-11-21",
+      "arrival_date": "2024-11-21",
+      "departure_airport": "PEK",
+      "arrival_airport": "HND",
+      "ticket_stock": 3
+    },
+    {
+      "id": 7,
+      "flight_number": "GG127",
+      "departure_date": "2024-12-21",
+      "arrival_date": "2024-12-21",
+      "departure_airport": "PEK",
+      "arrival_airport": "HND",
+      "ticket_stock": 1
+    }
+  ]
+}

@@ -6,8 +6,9 @@ import {
   ChatCompletionToolMessageParam,
   ChatCompletionUserMessageParam,
 } from "openai/resources";
-import { createChatCompletion } from "./chat";
 import { rl } from "./interface";
+import { createChatCompletion } from "./chat";
+import availableFns from "./functions";
 
 interface ChoiceWithToolCalls extends ChatCompletion.Choice {
   finish_reason: "tool_calls";
@@ -18,72 +19,120 @@ type ChatCompletionMessageWithToolCalls = Required<
   Omit<ChatCompletionMessage, "function_call">
 >;
 
-rl.setPrompt("You: ");
+const messages: ChatCompletionMessageParam[] = [
+  {
+    role: "system",
+    content:
+      "You are a helpful flight assistant that can help users book flights and find flights.",
+  },
+];
 
-// 1. Configure chat tools for first openAI call
 const tools: ChatCompletionTool[] = [
   {
     type: "function",
     function: {
-      name: "getTimeOfDay",
-      description: "Get the current time of day",
+      name: "getFlights",
+      description: "Get the list of flights between two locations",
+      parameters: {
+        type: "object",
+        properties: {
+          origin: {
+            type: "string",
+            description: "The airport code of the origin. e.g. SYD",
+          },
+          destination: {
+            type: "string",
+            description: "The airport code of the destination. e.g. LAX",
+          },
+        },
+        required: ["origin", "destination"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "bookFlight",
+      description: "Book a flight",
+      parameters: {
+        type: "object",
+        properties: {
+          flightNumber: {
+            type: "string",
+            description: "The flight number to book",
+          },
+          name: {
+            type: "string",
+            description: "The name of the passenger",
+          },
+          passportNumber: {
+            type: "string",
+            description: "The passport number of the passenger",
+          },
+          numberOfTickets: {
+            type: "number",
+            description: "The number of tickets to book",
+          },
+          email: {
+            type: "string",
+            description: "The email address of the passenger",
+          },
+        },
+        required: [
+          "flightNumber",
+          "name",
+          "passportNumber",
+          "numberOfTickets",
+          "email",
+        ],
+      },
     },
   },
 ];
 
+rl.setPrompt("You: ");
+
 function main() {
-  const messages: ChatCompletionMessageParam[] = [
-    {
-      role: "system",
-      content:
-        "You are a helpful assistant that gives information about the time of day",
-    },
-  ];
-
   rl.prompt();
-
-  rl.on("line", async (input) => {
+  rl.on("line", async function processInput(input) {
     const userMessage: ChatCompletionUserMessageParam = {
       role: "user",
       content: input.trim(),
     };
-    messages.push(userMessage);
 
+    messages.push(userMessage);
     const completion = await createChatCompletion(messages, tools);
 
-    // 2. Decide if tool call is required
     if (shouldCallTool(completion)) {
       const { tool_calls } = completion.message;
-      // 3. Invoke the tool
-      if (!tool_calls[0]) {
-        throw new Error("No tool call found");
-      }
 
-      const { name: toolName } = tool_calls[0].function;
-      const { id: toolCallId } = tool_calls[0];
+      for (const toolCall of tool_calls) {
+        const { id: toolCallId } = toolCall;
+        const { name: toolName, arguments: rawToolArgs } = toolCall.function;
 
-      if (toolName === "getTimeOfDay") {
-        const toolResponse = getTimeOfDay();
+        const toolArgs = JSON.parse(rawToolArgs);
 
-        // 4. make a second call to openAI with the tool response
+        const fnResponse = await availableFns[
+          toolName as keyof typeof availableFns
+        ](toolArgs);
+
         const toolMessage: ChatCompletionToolMessageParam = {
           role: "tool",
-          content: toolResponse,
           tool_call_id: toolCallId,
+          content: fnResponse,
         };
 
         messages.push(toolMessage);
-
-        const completionWithTool = await createChatCompletion(messages, tools);
-
-        console.log(completionWithTool.message.content);
       }
+
+      const completionWithTool = await createChatCompletion(messages, tools);
+
+      console.log(completionWithTool.message.content);
     } else {
-      const { message: completionMessage } = completion;
-      console.log(`${completionMessage.role}: ${completionMessage.content}`);
+      console.log(`${completion.message.role}: ${completion.message.content}`);
     }
 
-    if (input.trim() === "exit") {
+    if (input === "exit") {
       rl.close();
     } else {
       rl.prompt();
@@ -91,20 +140,10 @@ function main() {
   });
 }
 
-function getTimeOfDay() {
-  const date = new Date();
-
-  return date.toLocaleTimeString("en-AU", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-}
+main();
 
 function shouldCallTool(
   completion: ChatCompletion.Choice
 ): completion is ChoiceWithToolCalls {
   return completion.finish_reason === "tool_calls";
 }
-
-main();

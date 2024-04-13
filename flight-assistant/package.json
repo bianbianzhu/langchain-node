@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r ts-node/register --env-file=.env src/index.ts"
+    "dev": "node -r ts-node/register --env-file=.env src/index.ts",
+    "db": "json-server db.json --port 8088"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "json-server": "^1.0.0-alpha.23",
     "openai": "^4.33.0",
     "tiktoken": "^1.0.13"
   },
