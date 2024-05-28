@@ -10,13 +10,10 @@ import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retr
 import {
   RunnableSequence,
   RunnablePassthrough,
-  Runnable,
 } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { HumanMessage, BaseMessage } from "@langchain/core/messages";
-import { LanguageModelLike } from "@langchain/core/language_models/base";
-
 const SYSTEM_F_STRING_TEMPLATE = `You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
 Context: {context} 
 Answer:`;
