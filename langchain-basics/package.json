@@ -10,9 +10,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.12",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@langchain/community": "^0.2.3",
+    "cheerio": "^1.0.0-rc.12",
+    "langchain": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20"
+  }
 }

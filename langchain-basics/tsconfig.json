@@ -5,7 +5,7 @@
     "moduleDetection": "force",
 
     /* Modules */
-    "module": "commonjs",
+    "module": "CommonJS",
     "rootDir": "src",
     "resolveJsonModule": true,
 
@@ -24,8 +24,8 @@
     "strict": true,
     "noImplicitAny": true,
     "useUnknownInCatchVariables": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true
   }
