@@ -1,5 +1,6 @@
 import {
   ChatPromptTemplate,
+  PromptTemplate,
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
@@ -14,12 +15,15 @@ import {
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { HumanMessage, BaseMessage } from "@langchain/core/messages";
+
 const SYSTEM_F_STRING_TEMPLATE = `You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
 Context: {context} 
 Answer:`;
 
 const HISTORY_AWARE_INSTRUCTION_TEMPLATE =
   "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation";
+
+const a = ChatPromptTemplate.fromTemplate(SYSTEM_F_STRING_TEMPLATE);
 
 const promptTemplate = ChatPromptTemplate.fromMessages<{
   context: string;

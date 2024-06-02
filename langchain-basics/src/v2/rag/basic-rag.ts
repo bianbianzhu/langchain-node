@@ -9,6 +9,7 @@ import {
 } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { formatDocumentsAsString as formatDocumentsAsStringUtil } from "langchain/util/document";
 import type { Document } from "@langchain/core/documents";
 
 const formatDocumentsAsString = (documents: Document[]) => {
@@ -46,7 +47,7 @@ async function main() {
 
   const chain = RunnableSequence.from([
     {
-      context: vectorStoreRetriever.pipe(formatDocumentsAsString),
+      context: vectorStoreRetriever.pipe(formatDocumentsAsStringUtil),
       question: new RunnablePassthrough(),
     },
     prompt,
