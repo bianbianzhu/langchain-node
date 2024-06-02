@@ -2,6 +2,8 @@
 
 This repository contains the code that is used to learn, test and implement the concepts of OpenAI API and LangChainJS.
 
+<Strong>This repository is a work in progress and will be updated frequently.</Strong>
+
 Using this Medium article as a [guide](https://medium.com/@bianbianzhu123/learning-langchain-a-fun-journey-through-models-messages-and-prompts-e2163f18328c)
 
 ## OpenAI API
