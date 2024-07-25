@@ -23,8 +23,6 @@ Answer:`;
 const HISTORY_AWARE_INSTRUCTION_TEMPLATE =
   "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation";
 
-const a = ChatPromptTemplate.fromTemplate(SYSTEM_F_STRING_TEMPLATE);
-
 const promptTemplate = ChatPromptTemplate.fromMessages<{
   context: string;
   input: string;

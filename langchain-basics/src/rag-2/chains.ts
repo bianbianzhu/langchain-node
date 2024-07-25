@@ -3,8 +3,8 @@ import {
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { chatModel } from "./chat-model.js";
-import { createVectorStore, loaders } from "./vectorStore.js";
+import { chatModel } from "./chat-model";
+import { createVectorStore, loaders } from "./vectorStore";
 import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 
