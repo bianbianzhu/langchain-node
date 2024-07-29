@@ -13,12 +13,13 @@ type PromptTemplateInput = {
 
 async function generate(
   state: GraphState
-): Promise<Pick<GraphState, "generations" | "chatHistory">> {
+): Promise<Pick<GraphState, "generations" | "chatHistory" | "count">> {
+  console.log("<---- GENERATE ---->");
   const { questions, documents, chatHistory } = state;
 
   const chatModel = new ChatOpenAI({
     modelName: "gpt-4o-mini",
-    temperature: 0,
+    temperature: 0.4,
   });
 
   const currentQuestion = questions.at(-1) ?? "";
@@ -57,6 +58,7 @@ async function generate(
   return {
     generations: [new AIMessage(response)],
     chatHistory: [new HumanMessage(currentQuestion), new AIMessage(response)],
+    count: { regenerate: 1, rewriteQuery: 0 },
   };
 }
 

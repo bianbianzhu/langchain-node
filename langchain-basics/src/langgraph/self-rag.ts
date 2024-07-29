@@ -303,7 +303,7 @@ workflow
 
 const app = workflow.compile({ checkpointer });
 
-visualization(app);
+visualization("./src/langgraph/images/graph.png", app);
 
 const config = { configurable: { thread_id: "42" } };
 

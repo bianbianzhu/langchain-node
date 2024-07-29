@@ -10,8 +10,9 @@ type PromptTemplateInput = {
 
 async function rewriteQuery(
   state: GraphState
-): Promise<Pick<GraphState, "questions">> {
-  const { questions } = state;
+): Promise<Pick<GraphState, "questions" | "count">> {
+  console.log("<---- REWRITE QUERY ---->");
+  const { questions, count } = state;
   const currentQuestion = questions.at(-1) ?? "";
 
   const chatModel = new ChatOpenAI({
@@ -34,6 +35,7 @@ async function rewriteQuery(
 
   return {
     questions: [optimizedQuestion],
+    count: { rewriteQuery: 1, regenerate: 0 },
   };
 }
 

@@ -2,15 +2,21 @@ import { END, MemorySaver, START, StateGraph } from "@langchain/langgraph";
 import { graphState, GraphState } from "./graph-state";
 import retrieve from "./nodes/retrieve";
 import generate from "./nodes/generate";
-import grade from "./nodes/grade";
+import gradeDocuments from "./nodes/gradeDocuments";
 import rewriteQuery from "./nodes/rewrite-query";
 import generateOrRewrite from "./conditions/generateOrRewrite";
+import gradeGenerationGrounded from "./nodes/gradeGenerationGrounded";
+import prepFinalGrade from "./nodes/prepFinalGrade";
+import prepFinalORRegenerate from "./conditions/PrepFinalORRegenerate";
+import { visualization } from "../visualization";
 
 export enum GraphNodes {
   Retrieve = "retrieve",
   Generate = "generate",
-  Grade = "grade",
+  GradeDocuments = "gradeDocuments",
   RewriteQuery = "rewriteQuery",
+  GradeGenerationGrounded = "gradeGenerationGrounded",
+  PrepForFinalGrade = "prepForFinalGrade",
 }
 
 const workflow = new StateGraph<GraphState>({ channels: graphState });
@@ -20,17 +26,30 @@ const checkpointer = new MemorySaver();
 workflow
   .addNode(GraphNodes.Retrieve, retrieve)
   .addNode(GraphNodes.Generate, generate)
-  .addNode(GraphNodes.Grade, grade)
+  .addNode(GraphNodes.GradeDocuments, gradeDocuments)
   .addNode(GraphNodes.RewriteQuery, rewriteQuery)
+  .addNode(GraphNodes.GradeGenerationGrounded, gradeGenerationGrounded)
+  .addNode(GraphNodes.PrepForFinalGrade, prepFinalGrade)
   .addEdge(START, GraphNodes.Retrieve)
-  .addEdge(GraphNodes.Retrieve, GraphNodes.Grade)
-  .addConditionalEdges(GraphNodes.Grade, generateOrRewrite, {
+  .addEdge(GraphNodes.Retrieve, GraphNodes.GradeDocuments)
+  .addConditionalEdges(GraphNodes.GradeDocuments, generateOrRewrite, {
     [GraphNodes.Generate]: GraphNodes.Generate,
     [GraphNodes.RewriteQuery]: GraphNodes.RewriteQuery,
   })
   .addEdge(GraphNodes.RewriteQuery, GraphNodes.Retrieve)
-  .addEdge(GraphNodes.Generate, END);
+  .addEdge(GraphNodes.Generate, GraphNodes.GradeGenerationGrounded)
+  .addConditionalEdges(
+    GraphNodes.GradeGenerationGrounded,
+    prepFinalORRegenerate,
+    {
+      [GraphNodes.Generate]: GraphNodes.Generate,
+      [GraphNodes.PrepForFinalGrade]: GraphNodes.PrepForFinalGrade,
+    }
+  )
+  .addEdge(GraphNodes.PrepForFinalGrade, END);
 
 const app = workflow.compile({ checkpointer });
+
+visualization("./src/langgraph/images/self-rag-new.png", app);
 
 export default app;

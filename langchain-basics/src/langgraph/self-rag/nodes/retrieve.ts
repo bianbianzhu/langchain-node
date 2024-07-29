@@ -4,18 +4,30 @@ import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
 
-const URL = "https://lilianweng.github.io/posts/2023-06-23-agent/";
+const URLS = [
+  "https://www.zockify.com/wowclassic/sod/",
+  "https://www.zockify.com/wowclassic/sod/runes/",
+  "https://www.zockify.com/wowclassic/sod/demon-fall-canyon/",
+  //   "https://python.langchain.com/v0.2/docs/introduction/",
+];
 
 async function retrieve(
   state: GraphState
 ): Promise<Pick<GraphState, "documents">> {
+  console.log("<---- RETRIEVE ---->");
   const { questions } = state;
 
   const currentQuestion = questions.at(-1) ?? "";
 
-  const loader = new CheerioWebBaseLoader(URL);
+  const docs2DList = await Promise.all(
+    URLS.map((url) => {
+      const loader = new CheerioWebBaseLoader(url, { selector: "main" });
 
-  const docs = await loader.load();
+      return loader.load();
+    })
+  );
+
+  const docs = docs2DList.flat(1);
 
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
