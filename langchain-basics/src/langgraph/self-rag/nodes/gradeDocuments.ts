@@ -2,36 +2,30 @@ import { ChatOpenAI } from "@langchain/openai";
 import { JsonOutputToolsParser } from "langchain/output_parsers";
 import { tool } from "@langchain/core/tools";
 import { GraphState } from "../graph-state";
-import { z } from "zod";
 import { pull } from "langchain/hub";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Document } from "@langchain/core/documents";
+import { graderToolParamSchema, GraderToolParamSchema } from "../shared-utils";
 
 type PromptTemplateInput = {
   context: string;
   question: string;
 };
 
-const paramSchema = z.object({
-  score: z.number().int().min(0).max(1).describe("Relevance score 1 or 0"),
-  explanation: z.string().describe("Explanation of the score"),
-});
-
-type Schema = z.infer<typeof paramSchema>;
-
 const graderTool = tool(
-  async (arg: Schema): Promise<string> => JSON.stringify(arg), // this function body is simply a placeholder
+  async (arg: GraderToolParamSchema): Promise<string> => JSON.stringify(arg), // this function body is simply a placeholder
   {
     name: "grader",
     description:
       "Score the retrieved documents for whether they are relevant to the question. Give a binary score 1 or 0 score, where 1 means that the document is relevant to the question.",
-    schema: paramSchema,
+    schema: graderToolParamSchema,
   } // somehow these args are not required for the user to input and will be automatically filled by the model - which is then parsed by the parser and ready to be used
 );
 
-async function grade(
+async function gradeDocuments(
   state: GraphState
 ): Promise<Pick<GraphState, "documents">> {
+  console.log("<---- GRADE DOCUMENTS---->");
   const { questions, documents } = state;
 
   const chatModel = new ChatOpenAI({
@@ -50,6 +44,10 @@ async function grade(
     },
   });
 
+  /**
+   * @param context - string (ONE document's pageContent)
+   * @param question - string
+   */
   const prompt = await pull<ChatPromptTemplate<PromptTemplateInput>>(
     "bianbianzhu/rag-document-relevance"
   );
@@ -62,13 +60,9 @@ async function grade(
    */
   const parser = new JsonOutputToolsParser();
 
-  /**
-   * @param context - string (formatted documents)
-   * @param question - string
-   */
   const chain = prompt.pipe(modelWithTools).pipe(parser);
 
-  // can't use createStuffDocumentsChain because the outputParser must be BaseOutputParser (extends BaseLLMOutputParser) and conflicts with the JsonOutputToolsParser (extends BaseLLMOutputParser)
+  // can't use createStuffDocumentsChain because the outputParser must be BaseOutputParser (extends BaseLLMOutputParser) and conflicts with the JsonOutputToolsParser (extends BaseLLMOutputParser) + for context, only one document is passed in each iteration of the loop
 
   const currentQuestion = questions.at(-1) ?? "";
 
@@ -92,4 +86,4 @@ async function grade(
 
 // define the output schema. JsonOutputToolsParser will parse tool calls out of a chat model response. in this case the function body itself is a placeholder
 
-export default grade;
+export default gradeDocuments;
