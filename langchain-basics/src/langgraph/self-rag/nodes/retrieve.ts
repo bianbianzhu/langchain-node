@@ -6,8 +6,11 @@ import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
 
 const URLS = [
   "https://www.zockify.com/wowclassic/sod/",
-  "https://www.zockify.com/wowclassic/sod/runes/",
+  "https://www.zockify.com/wowclassic/professions/",
   "https://www.zockify.com/wowclassic/sod/demon-fall-canyon/",
+  "https://www.u7buy.com/blog/wow-classic-sod-phase-4-fury-warrior-dps-guide/",
+  "https://www.u7buy.com/blog/wow-classic-sod-phase-4-holy-paladin-healer-guide/",
+  "https://wowvendor.com/media/wow-classic-tbc-woltk-vanilla/sod-phase-4-molten-core/",
   //   "https://python.langchain.com/v0.2/docs/introduction/",
 ];
 

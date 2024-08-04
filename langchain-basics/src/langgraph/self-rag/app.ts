@@ -7,8 +7,10 @@ import rewriteQuery from "./nodes/rewrite-query";
 import generateOrRewrite from "./conditions/generateOrRewrite";
 import gradeGenerationGrounded from "./nodes/gradeGenerationGrounded";
 import prepFinalGrade from "./nodes/prepFinalGrade";
-import prepFinalORRegenerate from "./conditions/PrepFinalORRegenerate";
+import prepFinalORRegenerate from "./conditions/prepFinalORRegenerate";
 import { visualization } from "../visualization";
+import gradeGenerationUseful from "./nodes/gradeGenerationUseful";
+import endOrRewrite from "./conditions/endOrRewrite";
 
 export enum GraphNodes {
   Retrieve = "retrieve",
@@ -17,6 +19,7 @@ export enum GraphNodes {
   RewriteQuery = "rewriteQuery",
   GradeGenerationGrounded = "gradeGenerationGrounded",
   PrepForFinalGrade = "prepForFinalGrade",
+  GradeGenerationUseful = "gradeGenerationUseful",
 }
 
 const workflow = new StateGraph<GraphState>({ channels: graphState });
@@ -30,6 +33,8 @@ workflow
   .addNode(GraphNodes.RewriteQuery, rewriteQuery)
   .addNode(GraphNodes.GradeGenerationGrounded, gradeGenerationGrounded)
   .addNode(GraphNodes.PrepForFinalGrade, prepFinalGrade)
+  .addNode(GraphNodes.GradeGenerationUseful, gradeGenerationUseful)
+  // Add edges to nodes
   .addEdge(START, GraphNodes.Retrieve)
   .addEdge(GraphNodes.Retrieve, GraphNodes.GradeDocuments)
   .addConditionalEdges(GraphNodes.GradeDocuments, generateOrRewrite, {
@@ -46,7 +51,11 @@ workflow
       [GraphNodes.PrepForFinalGrade]: GraphNodes.PrepForFinalGrade,
     }
   )
-  .addEdge(GraphNodes.PrepForFinalGrade, END);
+  .addEdge(GraphNodes.PrepForFinalGrade, GraphNodes.GradeGenerationUseful)
+  .addConditionalEdges(GraphNodes.GradeGenerationUseful, endOrRewrite, {
+    [GraphNodes.RewriteQuery]: GraphNodes.RewriteQuery,
+    [END]: END,
+  });
 
 const app = workflow.compile({ checkpointer });
 

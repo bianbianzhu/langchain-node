@@ -8,6 +8,7 @@ async function prepFinalGrade(state: GraphState): Promise<GraphState> {
     chatHistory: [],
     count: { rewriteQuery: 0, regenerate: 0 },
     generationGrounded: { ...state.generationGrounded },
+    generationUseful: { ...state.generationUseful },
     generations: [],
   };
 }

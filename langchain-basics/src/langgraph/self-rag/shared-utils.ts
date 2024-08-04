@@ -19,3 +19,12 @@ export const booleanGraderToolParamSchema = z.object({
 export type BooleanGraderToolParamSchema = z.infer<
   typeof booleanGraderToolParamSchema
 >;
+
+export const generationUsefulToolParamSchema = z.object({
+  grade: z.boolean().describe("Whether the question answers the user's query"),
+  explanation: z.string().describe("Explanation of the grade"),
+});
+
+export type GenerationUsefulToolParam = z.infer<
+  typeof generationUsefulToolParamSchema
+>;

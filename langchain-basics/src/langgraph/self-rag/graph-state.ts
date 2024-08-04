@@ -1,7 +1,10 @@
 import { AIMessage, BaseMessage } from "@langchain/core/messages";
 import { StateGraphArgs } from "@langchain/langgraph";
 import { Document } from "@langchain/core/documents";
-import { BooleanGraderToolParamSchema } from "./shared-utils";
+import {
+  BooleanGraderToolParamSchema,
+  GenerationUsefulToolParam,
+} from "./shared-utils";
 
 type Count = {
   rewriteQuery: number;
@@ -14,6 +17,7 @@ export interface GraphState {
   chatHistory: BaseMessage[]; // can we use InMemoryChatMessageHistory instead?
   count: Count;
   generationGrounded: BooleanGraderToolParamSchema;
+  generationUseful: GenerationUsefulToolParam;
   generations?: AIMessage[];
 }
 
@@ -44,6 +48,10 @@ export const graphState: StateGraphArgs<GraphState>["channels"] = {
   generationGrounded: {
     default: () => ({ grade: false, explanation: "" }),
     reducer: (x, y: BooleanGraderToolParamSchema) => (y ? y : x),
+  },
+  generationUseful: {
+    default: () => ({ grade: false, explanation: "" }),
+    reducer: (x, y: GenerationUsefulToolParam) => (y ? y : x),
   },
   generations: {
     default: () => [],
