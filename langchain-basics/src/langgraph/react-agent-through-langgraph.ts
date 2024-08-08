@@ -26,7 +26,7 @@ interface AgentState {
 }
 
 type ToolParamSchema = ZodObject<{
-  query: ZodString; // this makes sure `query` is required
+  query: ZodString; // this makes sure `query` is required - not necessary at all
 }>;
 
 const toolParamSchema: ToolParamSchema = z.object({
@@ -166,7 +166,7 @@ workflow
 
 const app = workflow.compile({ checkpointer });
 
-visualization(app);
+// visualization('',app);
 
 async function main() {
   //   const finalState = await app.invoke(

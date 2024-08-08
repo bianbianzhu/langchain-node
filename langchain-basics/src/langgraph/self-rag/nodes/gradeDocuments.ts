@@ -14,6 +14,7 @@ type PromptTemplateInput = {
 
 const graderTool = tool(
   async (arg: GraderToolParamSchema): Promise<string> => JSON.stringify(arg), // this function body is simply a placeholder
+  //FIX: the arg needs no type as it can be inferred from the schema
   {
     name: "grader",
     description:

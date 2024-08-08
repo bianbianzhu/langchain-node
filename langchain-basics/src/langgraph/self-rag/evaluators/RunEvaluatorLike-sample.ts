@@ -66,7 +66,12 @@ async function createDataset() {
 }
 
 async function startEvaluation() {
-  await createDataset(); // must be awaited before evaluation to ensure dataset is created and dataset.id is available
+  const datasetExists = await client.hasDataset({ datasetName });
+
+  if (!datasetExists) {
+    await createDataset();
+  }
+  // must be awaited before evaluation to ensure dataset is created and dataset.id is available
 
   await evaluate(
     (input: { prefix: string }) => ({ output: `Welcome ${input.prefix}` }), // this is the runnalbe you want to evaluate. It accepts the input (each element of `inputs` from the dataset example) and returns the prediction - in our case, an object with the key `output`
@@ -74,6 +79,7 @@ async function startEvaluation() {
       data: datasetName,
       evaluators: [sampleEvaluator],
       experimentPrefix: "sample-test",
+      numRepetitions: 2,
       metadata: {
         version: "1.0.0",
         revision_id: "beta",
