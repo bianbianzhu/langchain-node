@@ -40,6 +40,8 @@ async function sqlAssistant(
   //   } // must have this or error
   // );
 
+  // =====================================
+  // having the 2nd parameter - config, we can now access the thread_id from the main graph
   // console.log(config);
 
   const res = await agent.invoke(

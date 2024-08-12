@@ -12,9 +12,11 @@ async function executeReadOnlyTools(
   const currentMessage = messages.at(-1) as AIMessage;
 
   const toolCall = currentMessage.tool_calls?.[0] as ToolCall;
+  //The above is equivalent to `const toolCall = lastMessage.tool_calls![0];`
   const selectedTool = READONLY_TOOLS_BY_NAME[toolCall.name];
 
-  // the response from the tool is a ToolMessage (with the content of the function returned value). Simply pass the entire tool call object to invoke the tool
+  // the response from the tool is a ToolMessage (with the content of the function returned value).
+  // Simply pass the entire tool call object to invoke the tool and generate the ToolMessage
   const toolResponse = (await selectedTool.invoke(toolCall)) as ToolMessage;
 
   return {

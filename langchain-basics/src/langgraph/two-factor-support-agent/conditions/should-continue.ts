@@ -15,12 +15,12 @@ function shouldContinue(state: GraphState): GraphNodes | typeof END {
 
   // For simplicity, handle single tool calls only
   const { name } = currentMessage.tool_calls[0];
-  if (AUTHORIZED_TOOLS_BY_NAME[name]) {
+  if (AUTHORIZED_TOOLS_BY_NAME[name] !== undefined) {
     // If the picked tool is an authorized one, request authorization first
     return GraphNodes.RequestAuthorization;
   }
 
-  if (READONLY_TOOLS_BY_NAME[name]) {
+  if (READONLY_TOOLS_BY_NAME[name] !== undefined) {
     return GraphNodes.InvokeReadonlyTools;
   }
 

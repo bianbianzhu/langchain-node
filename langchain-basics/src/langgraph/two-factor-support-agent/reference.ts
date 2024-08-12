@@ -221,6 +221,7 @@ Instead, you should use the data sources available to resolve the user's problem
       configurable: { thread_id: threadId },
       runName: "Customer Support Agent",
     };
+
     if (queryParams.get("two_factor_code") != null) {
       await app.updateState(config, {
         provided_two_factor_code: queryParams.get("two_factor_code"),

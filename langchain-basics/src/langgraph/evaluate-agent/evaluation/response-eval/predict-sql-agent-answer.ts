@@ -16,7 +16,6 @@ let appInstance: CompiledStateGraph<
 > | null = null;
 
 /**
- *
  * @param input - The type should be a single element of example.inputs
  */
 export async function predictSQLAgentAnswer(

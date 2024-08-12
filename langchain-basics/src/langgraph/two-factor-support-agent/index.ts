@@ -1,10 +1,7 @@
-import { RunnableConfig } from "@langchain/core/runnables";
+import loadAll from "./loaders";
 
 async function main() {
-  const config: RunnableConfig = {
-    configurable: { thread_id: "42" },
-    runName: "Customer Support Agent",
-  };
+  loadAll();
 }
 
 main();
