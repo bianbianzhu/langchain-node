@@ -45,15 +45,16 @@ class ReturnNodeValueAsync {
   }
 
   public async call(state: GraphState): Promise<GraphState> {
-    console.log(`Adding ${this._value} to ${state.aggregate}`);
     await sleep(this._delayMs);
+    console.log(`Done waiting ${this._delayMs} ms`);
+    console.log(`Adding ${this._value} to ${state.aggregate}`);
     return { aggregate: [this._value] };
   }
 }
 
 // This node will be executed after nodeB and nodeC have finished, so after 5 seconds
 async function nodeDAsync(state: GraphState): Promise<GraphState> {
-  console.log("---- Node D ----");
+  console.log(`Adding D async to ${state.aggregate}`);
   const { aggregate } = state;
   const lastAggregate = aggregate.at(-1);
   const last2ndAggregate = aggregate.at(-2);
@@ -67,15 +68,17 @@ async function nodeDAsync(state: GraphState): Promise<GraphState> {
 }
 
 const nodeA = new ReturnNodeValue("I'm A");
-const nodeBWithDelay = new ReturnNodeValueAsync("I'm B", 3000);
+const nodeBWithDelay = new ReturnNodeValueAsync("I'm B", 500);
 const nodeCWithDelay = new ReturnNodeValueAsync("I'm C", 5000);
 
 workflow
   .addNode("a", nodeA.call.bind(nodeA))
   .addEdge(START, "a")
-  .addNode("b", nodeBWithDelay.call.bind(nodeBWithDelay))
+
   .addNode("c", nodeCWithDelay.call.bind(nodeCWithDelay))
-  .addNode("d", nodeDAsync)
+  .addNode("b", nodeBWithDelay.call.bind(nodeBWithDelay))
+
+  .addNode("d", nodeDAsync) // the fan-in node will wait for nodeB and nodeC to finish and then execute
   .addEdge("a", "b")
   .addEdge("a", "c")
   .addEdge("b", "d")

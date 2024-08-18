@@ -36,6 +36,7 @@ const graphState: StateGraphArgs<GraphState>["channels"] = {
       }
 
       if (y === undefined || y.length === 0) {
+        // At the `sink` node (fan-in node), we would use the `fanOutValues`  to sort and populate the `aggregate` field. And use this trick to reset the `fanOutValues` field (like clear the temporary field)
         return [];
       } // Overwrite, Similar to redux
 
@@ -84,6 +85,7 @@ class ParallelReturnNodeValue {
   }
 }
 
+// Our aggregateFanOutValueNode "sink" node in this case took the mapped values and then sorted them in a consistent way. Notice that, because it returns an empty array for fanOutValues, our reduceFanOuts reducer function decided to overwrite the previous values in the state.
 function aggregateFanOutValueNode(
   state: GraphState
 ): Pick<GraphState, "aggregate" | "fanOutValues"> {
@@ -94,7 +96,8 @@ function aggregateFanOutValueNode(
 
   return {
     aggregate: rankedValue.concat(["I'm E"]),
-    fanOutValues: [],
+    fanOutValues: [], // Must use an empty array OR undefined to overwrite the previous values
+    // If `fanOutValues` is omitted, the reducer will not be called
   };
 }
 

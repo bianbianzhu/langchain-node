@@ -72,8 +72,11 @@ const nodeD = returnNodeValue("D");
 // add nodes to the graph
 workflow
   .addNode("A", nodeA)
+
+  // this determines the order of execution
   .addNode("B", nodeB)
   .addNode("C", nodeC)
+
   .addNode("D", nodeD)
   // add edges to the graph
 
