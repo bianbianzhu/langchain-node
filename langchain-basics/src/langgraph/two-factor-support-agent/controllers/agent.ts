@@ -37,7 +37,7 @@ const invokeAgentSchema = z.object({
 export const invokeAgent = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   const validateQueryResult =
     invokeAgentSchema.shape.request.shape.query.safeParse(req.query);
@@ -76,7 +76,7 @@ export const invokeAgent = async (
     await app.updateState(config, { providedTwoFactorCode: two_factor_code });
   }
 
-  // why passing `null` - does it mean not to invoke the graph app?
+  // Resume by running the graph with a null input.
   const endState = (await app.invoke(
     isResuming ? null : { messages: new HumanMessage(question ?? "") },
     config
