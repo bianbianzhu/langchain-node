@@ -1,4 +1,11 @@
-import { END, START, StateGraph, StateGraphArgs } from "@langchain/langgraph";
+import {
+  END,
+  MemorySaver,
+  START,
+  StateGraph,
+  StateGraphArgs,
+} from "@langchain/langgraph";
+import { RunnableConfig } from "@langchain/core/runnables";
 import { visualization } from "../visualization";
 
 interface GraphState {
@@ -66,15 +73,31 @@ workflow
   .addEdge("C", "D")
   .addEdge("D", END);
 
-const app = workflow.compile();
+const checkpointer = new MemorySaver();
+
+const app = workflow.compile({ checkpointer });
 
 visualization("./src/langgraph/persistence/images/playground.png", app);
 
 (async () => {
-  const res = await app.invoke({
-    messages: [],
-    flag: "external",
-  });
+  const config: RunnableConfig = {
+    configurable: { thread_id: "46" },
+  };
 
-  console.log(res);
+  const res = await app.invoke(
+    {
+      messages: [],
+      flag: "external",
+    },
+    config
+  );
+
+  const history = app.getStateHistory(config);
+
+  for await (const snapshot of history) {
+    console.log(`====Step ${snapshot.metadata?.step}====`);
+    console.log(JSON.stringify(snapshot, null, 2));
+  }
+
+  // console.log(res);
 })();
