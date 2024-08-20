@@ -105,7 +105,11 @@ async function main() {
 
   const finalState = await appWithInterrupt.invoke(null, snapshot.config);
 
-  console.log(finalState);
+  // console.log(finalState);
+
+  const snapshot2 = await appWithInterrupt.getState(config);
+  console.log("====================");
+  console.log(snapshot2);
 }
 
 main();
