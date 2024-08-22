@@ -25,7 +25,7 @@ export interface GraphState {
   messages: BaseMessage[];
 }
 
-enum GraphNodes {
+export enum GraphNodes {
   CallModel = "call_model",
   Tools = "tools",
 }
