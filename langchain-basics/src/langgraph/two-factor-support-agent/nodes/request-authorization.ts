@@ -26,7 +26,7 @@ async function requestAuthorization(
   return {
     authenticationState: AuthenticationState.Authorizing,
     generatedTwoFactorCode: twoFactorCode,
-    providedTwoFactorCode: undefined,
+    providedTwoFactorCode: undefined, // `undefined` will remove the key from the state (if the key exists + initial is `null` (has no reducer))
     authorizationFailureCount: hadPreviousAttempt ? 1 : 0,
   };
 }

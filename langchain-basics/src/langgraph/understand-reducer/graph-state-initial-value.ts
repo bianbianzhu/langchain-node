@@ -10,8 +10,7 @@ import { visualization } from "../visualization";
 
 interface GraphState {
   messages: string[];
-  flag?: "internal" | "external";
-  test?: string;
+  test?: string; // 👈👈👈👈👈 ONLY DEFINED HERE (must be optional, otherwise `graphState` belong gives TS error)
 }
 
 const graphState: StateGraphArgs<GraphState>["channels"] = {
@@ -19,11 +18,7 @@ const graphState: StateGraphArgs<GraphState>["channels"] = {
     default: () => [],
     reducer: (x, y: string[]) => x.concat(y),
   },
-  flag: {
-    default: () => "internal",
-    reducer: (x, y?: "internal" | "external") => (y ? y : x),
-  },
-  test: null,
+  // `test` is missing here
 };
 
 const workflow = new StateGraph<GraphState>({ channels: graphState });
@@ -41,69 +36,40 @@ class GraphNode {
   }
 }
 
-async function nodeDoesNotUpdateState(
-  state: GraphState
-): Promise<Partial<GraphState>> {
-  const { messages } = state;
-  console.log(`Do not update state`);
+async function updateTest(state: GraphState): Promise<Partial<GraphState>> {
+  console.log(`Updating test`);
 
   return {
-    test: "test",
+    test: "test", // 👉👉👉👉👉👉👉 Try writting into the state of the `test` value
   };
-}
-
-function sleep(delayMs: number) {
-  return new Promise((resolve) => setTimeout(resolve, delayMs));
-}
-
-function handleRoutes(state: GraphState): "A" | "B" {
-  const { flag } = state;
-
-  if (flag === "internal") {
-    return "A";
-  } else {
-    return "B";
-  }
 }
 
 const NodeA = new GraphNode("I am A");
 const NodeB = new GraphNode("I am B");
-const NodeC = new GraphNode("I am C");
-const NodeD = new GraphNode("I am D");
 
 workflow
   .addNode("A", NodeA.call.bind(NodeA))
-
   .addNode("B", NodeB.call.bind(NodeB))
-
-  .addNode("C", NodeC.call.bind(NodeC))
-
-  .addNode("D", NodeD.call.bind(NodeD))
-
-  .addNode("NodeDoesNotUpdateState", nodeDoesNotUpdateState)
-
-  .addConditionalEdges(START, handleRoutes, { A: "A", B: "B" })
-  .addEdge("A", "C")
-  .addEdge("B", "C")
-  .addEdge("C", "D")
-  .addEdge("D", "NodeDoesNotUpdateState")
-  .addEdge("NodeDoesNotUpdateState", END);
+  .addNode("updateTest", updateTest)
+  .addEdge(START, "A")
+  .addEdge("A", "B")
+  .addEdge("B", "updateTest")
+  .addEdge("updateTest", END);
 
 const checkpointer = new MemorySaver();
 
 const app = workflow.compile({ checkpointer });
 
-visualization("./src/langgraph/persistence/images/playground.png", app);
+visualization("./src/langgraph/understand-reducer/images/reducer.png", app);
 
 (async () => {
   const config: RunnableConfig = {
-    configurable: { thread_id: "46" },
+    configurable: { thread_id: "100" },
   };
 
   const res = await app.invoke(
     {
-      messages: [],
-      flag: "external",
+      messages: ["initial input"],
     },
     config
   );
@@ -114,6 +80,4 @@ visualization("./src/langgraph/persistence/images/playground.png", app);
     console.log(`====Step ${snapshot.metadata?.step}====`);
     console.log(JSON.stringify(snapshot, null, 2));
   }
-
-  // console.log(res);
 })();

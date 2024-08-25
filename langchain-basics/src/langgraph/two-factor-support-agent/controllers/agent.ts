@@ -82,6 +82,19 @@ export const invokeAgent = async (
     config
   )) as GraphState;
 
+  const stateHistory = app.getStateHistory(config);
+
+  for await (const snapshot of stateHistory) {
+    // console.log(`====Step ${snapshot.metadata?.step}====`);
+    // console.log(JSON.stringify(snapshot, null, 2));
+    // console.log(snapshot);
+
+    if ((snapshot.metadata?.step ?? 0) > 8) {
+      console.log(`====Step ${snapshot.metadata?.step}====`);
+      console.log(JSON.stringify(snapshot, null, 2));
+    }
+  }
+
   if (endState.authenticationState === AuthenticationState.Authorizing) {
     return res.status(200).json({
       instruction: `To confirm it's really you, we've texted you a code. Please re-enter the code here once you receive it. You've had ${endState.authorizationFailureCount} failed attempts.`,

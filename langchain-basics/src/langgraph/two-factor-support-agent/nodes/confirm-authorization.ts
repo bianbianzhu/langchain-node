@@ -17,8 +17,8 @@ async function confirmAuthorization(
     authenticationState: isAuthorized
       ? AuthenticationState.Authenticated
       : AuthenticationState.Authorizing,
-    providedTwoFactorCode: undefined,
-    generatedTwoFactorCode: undefined,
+    providedTwoFactorCode: undefined, // `undefined` will remove the key from the state (if the key exists + initial is `null` (has no reducer))
+    generatedTwoFactorCode: undefined, // `undefined` will remove the key from the state (if the key exists + initial is `null` (has no reducer))
   };
 }
 
