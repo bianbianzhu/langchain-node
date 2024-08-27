@@ -1,0 +1,1 @@
+// For our AI-powered research assistant, we're leveraging LangGraph's capabilities to create a workflow that combines an AI model (Claude) with a web search retrieval tool powered by Exa's API, to fetch, find and analyze any documents (in this case research on climate tech).

@@ -42,11 +42,11 @@ async function main() {
     agentNextState.messages[agentNextState.messages.length - 1].content
   );
 
-  const imageBlob = await agent.getGraph().drawMermaidPng();
-  const imageArrayBuffer = await imageBlob.arrayBuffer();
-  const imageBuffer = Buffer.from(imageArrayBuffer);
+  // const imageBlob = await agent.getGraph().drawMermaidPng();
+  // const imageArrayBuffer = await imageBlob.arrayBuffer();
+  // const imageBuffer = Buffer.from(imageArrayBuffer);
 
-  fs.writeFileSync("./src/self-rag/images/graph.png", imageBuffer);
+  // fs.writeFileSync("./src/self-rag/images/graph.png", imageBuffer);
 }
 
 main();

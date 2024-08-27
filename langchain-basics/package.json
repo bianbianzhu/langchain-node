@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@langchain/community": "^0.2.31",
-    "@langchain/langgraph": "^0.1.2",
+    "@langchain/langgraph": "^0.0.34",
     "@mendable/firecrawl-js": "^0.0.36",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
