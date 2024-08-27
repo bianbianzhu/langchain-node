@@ -10,7 +10,8 @@ import { visualization } from "../visualization";
 
 interface GraphState {
   messages: string[];
-  test?: string; // 👈👈👈👈👈 ONLY DEFINED HERE (must be optional, otherwise `graphState` belong gives TS error)
+  test?: string;
+  compare?: string; // 👈👈👈👈👈 This uses default + reducer
 }
 
 const graphState: StateGraphArgs<GraphState>["channels"] = {
@@ -19,6 +20,10 @@ const graphState: StateGraphArgs<GraphState>["channels"] = {
     reducer: (x, y: string[]) => x.concat(y),
   },
   test: null,
+  compare: {
+    default: () => "",
+    reducer: (x, y?: string) => y ?? x, // replace logic
+  },
 };
 
 const workflow = new StateGraph<GraphState>({ channels: graphState });
@@ -40,7 +45,17 @@ async function updateTest(state: GraphState): Promise<Partial<GraphState>> {
   console.log(`Updating test`);
 
   return {
-    test: "test", // 👉👉👉👉👉👉👉 Try writting into the state of the `test` value
+    test: "test",
+    compare: "compare",
+  };
+}
+
+async function wipeFields(state: GraphState): Promise<Partial<GraphState>> {
+  console.log(`Wiping fields`);
+
+  return {
+    test: undefined,
+    compare: "",
   };
 }
 
@@ -51,10 +66,12 @@ workflow
   .addNode("A", NodeA.call.bind(NodeA))
   .addNode("B", NodeB.call.bind(NodeB))
   .addNode("updateTest", updateTest)
+  .addNode("wipeFields", wipeFields)
   .addEdge(START, "A")
   .addEdge("A", "B")
   .addEdge("B", "updateTest")
-  .addEdge("updateTest", END);
+  .addEdge("updateTest", "wipeFields")
+  .addEdge("wipeFields", END);
 
 const checkpointer = new MemorySaver();
 
@@ -64,7 +81,7 @@ visualization("./src/langgraph/understand-reducer/images/reducer.png", app);
 
 (async () => {
   const config: RunnableConfig = {
-    configurable: { thread_id: "100" },
+    configurable: { thread_id: "102" },
   };
 
   const res = await app.invoke(
