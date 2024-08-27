@@ -11,7 +11,7 @@ const agentTools: StructuredTool[] = [
 ];
 
 const chatModel = new ChatOpenAI({
-  modelName: "gpt-3.5-turbo",
+  modelName: "gpt-4o",
   temperature: 0,
 });
 

@@ -16,7 +16,7 @@ const retrieveWebContent = tool(retrieve, {
 
 async function retrieve(
   args: z.infer<typeof retrieveToolParamSchema>
-): Promise<any> {
+): Promise<string[]> {
   const { query } = args;
 
   const client = new Exa(process.env.EXA_API_KEY);
@@ -34,13 +34,19 @@ async function retrieve(
 
   const documents = await retriever.invoke(query); // return an array of Document objects
 
-  const;
-
   // const resultString = await searchResults.invoke(query); // Return a JSON string
 
-  // const promptTemplate = ChatPromptTemplate.fromMessages([
-  //   ['']
-  // ])
+  const prompts = documents.map(
+    (document) => `
+  <source>
+      <url>${document.metadata.url}</url>
+      <highlights>${document.metadata.highlights}</highlights>
+  </source>`
+  );
+
+  return prompts;
 }
 
-retrieve({ query: "What is weather in melbourne" });
+// retrieve({ query: "Latest research papers on climate technology" });
+
+export default retrieveWebContent;
