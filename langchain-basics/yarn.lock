@@ -110,12 +110,29 @@
     "@langchain/core" ">0.1.0  <0.3.0"
     exa-js "^1.0.12"
 
-"@langchain/langgraph@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@langchain/langgraph/-/langgraph-0.0.34.tgz#1504c29ce524d08d6f076c34e0623c6de1f1246c"
-  integrity sha512-cuig46hGmZkf+eXw1Cx2CtkAWgsAbIpa5ABLxn9oe1rbtvHXmfekqHZA6tGE0DipEmsN4H64zFcDEJydll6Sdw==
+"@langchain/langgraph-checkpoint-sqlite@~0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph-checkpoint-sqlite/-/langgraph-checkpoint-sqlite-0.0.1.tgz#6eb46934f6767a6509d2dc812cf8940dc076b684"
+  integrity sha512-GaZo/rMS9WCO11FdYgO/omCmYnk50zjKdsxPiEKMkorXkPDLuMIgIEfUs5VKc0PMclvFfSNzX8gmvp8Kwk5MpA==
+  dependencies:
+    "@langchain/langgraph-checkpoint" "~0.0.1"
+
+"@langchain/langgraph-checkpoint@~0.0.1", "@langchain/langgraph-checkpoint@~0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph-checkpoint/-/langgraph-checkpoint-0.0.4.tgz#75fb8a1590d30eee22dc25f3fc43ea6cb57e047c"
+  integrity sha512-oihZW6l2gr+BZ+BAkz3CrB3Pmyz/PGboDqvbR43jzNk/SvWWcsY0brm89K4oS1DDmxP/2aos/+E+Ynk5Z2XL6Q==
+  dependencies:
+    uuid "^10.0.0"
+
+"@langchain/langgraph@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@langchain/langgraph/-/langgraph-0.1.4.tgz#d7d228f3fe2d763f4eba9f4aaff2605d512a7a91"
+  integrity sha512-jtcGsNRH3kl4KxECcUtvtIPLsYpYi7MPYr09CTE7mlid77Wt6mWs5igBp3DgBrcy/uBqLds0do/j8nrRNfje6w==
   dependencies:
     "@langchain/core" ">=0.2.20 <0.3.0"
+    "@langchain/langgraph-checkpoint" "~0.0.4"
+    "@langchain/langgraph-checkpoint-sqlite" "~0.0.1"
+    double-ended-queue "^2.1.0-0"
     uuid "^10.0.0"
     zod "^3.23.8"
 
@@ -305,6 +322,11 @@
     "@types/http-errors" "*"
     "@types/node" "*"
     "@types/send" "*"
+
+"@types/uuid@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-10.0.0.tgz#e9c07fe50da0f53dc24970cca94d619ff03f6f6d"
+  integrity sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==
 
 "@types/uuid@^9.0.1":
   version "9.0.8"
@@ -871,6 +893,11 @@ dotenv@^16.0.3, dotenv@^16.4.5:
   version "16.4.5"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
   integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
+
+double-ended-queue@^2.1.0-0:
+  version "2.1.0-0"
+  resolved "https://registry.yarnpkg.com/double-ended-queue/-/double-ended-queue-2.1.0-0.tgz#103d3527fd31528f40188130c841efdd78264e5c"
+  integrity sha512-+BNfZ+deCo8hMNpDqDnvT+c0XpJ5cUa6mqYq89bho2Ifze4URTqRkcwR399hWoTrTkbZ/XJYDgP6rc7pRgffEQ==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
@@ -1448,7 +1475,7 @@ langchain@~0.2.3:
     zod "^3.22.4"
     zod-to-json-schema "^3.22.3"
 
-langsmith@^0.1.43, langsmith@^0.1.46:
+langsmith@^0.1.43:
   version "0.1.46"
   resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.1.46.tgz#68fc93753bfa2388ba8d88f3d5f2a69dbd61394a"
   integrity sha512-2gV6fQdEf8Jrur5KQzzmMyr0CiixMUHG8xxUd0S50mnVYWOdUF39oq9cxXR9f4UgAukpQu8uuf3Scu43PQwipQ==
@@ -1459,6 +1486,18 @@ langsmith@^0.1.43, langsmith@^0.1.46:
     p-retry "4"
     semver "^7.6.3"
     uuid "^9.0.0"
+
+langsmith@^0.1.48:
+  version "0.1.48"
+  resolved "https://registry.yarnpkg.com/langsmith/-/langsmith-0.1.48.tgz#be6ca209bab3436b45dfe71aca7bacc88b61b2bc"
+  integrity sha512-lh98dZeShVPG1VzENpbjFWiburyYpChsO7nehGwxuqQ5/E1BBFKpsDCxLTcgXYpgWFPJxRvMqq7bLeq/txjakw==
+  dependencies:
+    "@types/uuid" "^10.0.0"
+    commander "^10.0.1"
+    p-queue "^6.6.2"
+    p-retry "4"
+    semver "^7.6.3"
+    uuid "^10.0.0"
 
 langsmith@~0.1.30, langsmith@~0.1.40:
   version "0.1.41"

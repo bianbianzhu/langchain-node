@@ -25,7 +25,7 @@ const agent = createReactAgent({
 
 async function main() {
   const agentFinalState = await agent.invoke(
-    { messages: [new HumanMessage("what is the current weather in sf")] },
+    { messages: [new HumanMessage("fascinating article about cats")] },
     { configurable: { thread_id: "42" } }
   );
 

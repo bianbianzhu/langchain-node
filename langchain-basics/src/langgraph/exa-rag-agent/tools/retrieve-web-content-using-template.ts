@@ -2,7 +2,8 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import Exa from "exa-js";
 import { ExaRetriever } from "@langchain/exa";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
+import { ChatPromptValue } from "@langchain/core/prompt_values";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { DocumentInterface } from "@langchain/core/documents";
 import { BaseMessage } from "@langchain/core/messages";
@@ -44,32 +45,32 @@ async function retrieve(args: RetrieveToolParam) {
     ["human", fString],
   ]);
 
+  const promptTemplate2 = PromptTemplate.fromTemplate(fString);
+
   const documentToMessageChain = RunnableSequence.from<
-    DocumentInterface<Record<string, any>>
+    DocumentInterface<Record<string, any>>,
+    BaseMessage[]
   >([
     (document): PromptTemplateInput => ({
       url: document.metadata.url,
       highlights: document.metadata.highlights.toString(),
     }),
-    promptTemplate,
+    (input: PromptTemplateInput) => promptTemplate.formatMessages(input),
   ]);
 
-  const test = await documentToMessageChain.invoke(documents[0]);
+  //   const test = await documentToMessageChain.invoke(documents[0]);
 
-  console.log(test);
+  //   console.log(test);
 
-  const chain = RunnableSequence.from<string, any>([
+  const chain = RunnableSequence.from<string, BaseMessage[][]>([
     retriever,
-    (
-      documents: DocumentInterface<Record<string, any>>[]
-    ): PromptTemplateInput[] =>
-      documents.map((document) => ({
-        url: document.metadata.url,
-        highlights: document.metadata.highlights.toString(),
-      })),
+    (documents: DocumentInterface<Record<string, any>>[]) =>
+      documentToMessageChain.batch(documents),
   ]);
 
-  //   const prompts = await chain.invoke(query);
+  const prompts = await chain.invoke(query);
+
+  console.log(prompts.flat());
 }
 
 retrieve({ query: "Latest research papers on climate technology" });
