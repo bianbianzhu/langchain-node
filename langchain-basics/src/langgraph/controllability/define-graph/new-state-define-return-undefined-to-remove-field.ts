@@ -50,6 +50,8 @@ async function node1(
   };
 }
 
+// If the node return an empty object (no state update), the following metadata will be added:
+
 // "metadata": {
 //     "source": "loop",
 //     "writes": {},
@@ -64,12 +66,32 @@ async function node1(
 //     "step": 1
 //   },
 
+async function node2(
+  state: GraphAnnotation
+): Promise<Partial<GraphAnnotation>> {
+  const { generatedTwoFactorCode } = state;
+
+  return {
+    generatedTwoFactorCode: undefined,
+  };
+}
+
+async function doNothing(
+  state: GraphAnnotation
+): Promise<Partial<GraphAnnotation>> {
+  return {};
+}
+
 const checkpointer = new MemorySaver();
 
 const app = workflow
   .addNode("node1", node1)
+  .addNode("node2", node2)
+  .addNode("doNothing", doNothing)
   .addEdge(START, "node1")
-  .addEdge("node1", END)
+  .addEdge("node1", "node2")
+  .addEdge("node2", "doNothing")
+  .addEdge("doNothing", END)
   .compile({ checkpointer });
 
 (async () => {
